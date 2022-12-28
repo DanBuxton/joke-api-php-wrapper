@@ -3,6 +3,7 @@
 namespace JokeApiWrapper;
 
 use Exception;
+use JokeApiWrapper\Exceptions\MalformedResponse;
 use JokeApiWrapper\Models\Joke;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -12,7 +13,7 @@ class JokeAPI
 {
     private string $api_base_url = 'https://v2.jokeapi.dev/joke/';
 
-    private HttpClientInterface $client;
+    private readonly HttpClientInterface $client;
 
     public function __construct() {
         $this->client = HttpClient::create();
@@ -20,6 +21,7 @@ class JokeAPI
 
     /**
      * @throws Exception
+     * @throws MalformedResponse
      */
     public function get_random_joke(): Joke
     {
@@ -30,7 +32,7 @@ class JokeAPI
 
     /**
      * @throws Exception
-     * @throws TransportExceptionInterface
+     * @throws MalformedResponse
      */
     public function create_random_joke(): Joke
     {
@@ -41,6 +43,7 @@ class JokeAPI
 
     /**
      * @throws Exception
+     * @throws MalformedResponse
      */
     private function make_api_call(string $method, string $url, array $options = null): array
     {
@@ -64,15 +67,14 @@ class JokeAPI
 
             if ($json === null || $json === false)
             {
-                throw new Exceptions\MalformedResponse();
+                throw new MalformedResponse();
             }
 
             return $json;
         }
         catch (TransportExceptionInterface $e)
         {
-//            TODO: Use custom exception
-            throw new Exception('Malformed response');
+            throw new MalformedResponse();
         }
     }
 }

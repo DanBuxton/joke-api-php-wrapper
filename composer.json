@@ -1,5 +1,5 @@
 {
-    "name": "danbuxton/joke_api_wrapper",
+    "name": "danbuxton/joke-api-wrapper",
     "description": "A composer wrapper for the Joke API",
     "type": "library",
     "license": "MIT",
